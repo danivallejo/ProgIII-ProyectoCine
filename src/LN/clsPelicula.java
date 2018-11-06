@@ -1,25 +1,22 @@
 package LN;
 
-import java.util.Date;
+
 
 public class clsPelicula 
 {
-	private String nombre, sinopsis, director, comentario;
+	private String nombre, sinopsis, director;
 	private double valoracion;
 	private int duracion;
-	private Date fecha_estreno;
 	
-	public clsPelicula(String nombre, String sinopsis, String director, String comentario, double valoracion,
-			int duracion, Date fecha_estreno) 
+	public clsPelicula(String nombre, String sinopsis, String director,  double valoracion,
+			int duracion) 
 	{
 		super();
 		this.nombre = nombre;
 		this.sinopsis = sinopsis;
 		this.director = director;
-		this.comentario = comentario;
 		this.valoracion = valoracion;
 		this.duracion = duracion;
-		this.fecha_estreno = fecha_estreno;
 	}
 
 	public String getNombre() {
@@ -46,14 +43,6 @@ public class clsPelicula
 		this.director = director;
 	}
 
-	public String getComentario() {
-		return comentario;
-	}
-
-	public void setComentario(String comentario) {
-		this.comentario = comentario;
-	}
-
 	public double getValoracion() {
 		return valoracion;
 	}
@@ -70,15 +59,4 @@ public class clsPelicula
 		this.duracion = duracion;
 	}
 
-	public Date getFecha_estreno() {
-		return fecha_estreno;
-	}
-
-	public void setFecha_estreno(Date fecha_estreno) {
-		this.fecha_estreno = fecha_estreno;
-	}
-	
-	
-	
-	
 }
