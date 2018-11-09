@@ -70,7 +70,7 @@ public class FrInicio extends JFrame {
 		contentPane.add(lblPassword);
 		
 		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\mikel\\workspace\\ProgIII-ProyectoCine\\src\\images\\images.jpg"));
+		lblNewLabel.setIcon(new ImageIcon(FrInicio.class.getResource("/images/images.jpg")));
 		lblNewLabel.setBounds(137, 28, 217, 130);
 		contentPane.add(lblNewLabel);
 		

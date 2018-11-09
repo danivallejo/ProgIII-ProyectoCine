@@ -3,7 +3,7 @@ package LN;
 public class clsValoracion {
 	
 	private int id;
-	private int puntucion;
+	private int puntuacion;
 	private String comentario;
 	private String pelicula;
 	
@@ -11,12 +11,22 @@ public class clsValoracion {
 	public clsValoracion(int id, int puntucion, String comentario, String pelicula) {
 		
 		this.id = id;
-		this.puntucion = puntucion;
+		this.puntuacion = puntuacion;
 		this.comentario = comentario;
 		this.pelicula = pelicula;
 		
 		
 	
+	}
+	
+	public clsValoracion ()
+	{
+		id= 0;
+		puntuacion = 0;
+		comentario = "";
+		pelicula = "";
+		
+		
 	}
 
 
@@ -31,12 +41,12 @@ public class clsValoracion {
 
 
 	public int getPuntucion() {
-		return puntucion;
+		return puntuacion;
 	}
 
 
-	public void setPuntucion(int puntucion) {
-		this.puntucion = puntucion;
+	public void setPuntuacion(int puntucion) {
+		this.puntuacion = puntucion;
 	}
 
 

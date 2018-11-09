@@ -10,11 +10,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import COMUN.clsSinActividad;
 import COMUN.clsUsuarioRepetido;
-import LN.clsCarrera;
-import LN.clsEntrenamiento;
-import LN.clsOpcEntrenamiento;
+import LN.clsValoracion;
 import LN.clsPelicula;
 import LN.clsUsuario;
 
@@ -23,7 +20,7 @@ public class BD
 	private static Logger logger = Logger.getLogger( BD.class.getName() );
 	private static Connection connection = null;
 	private static Statement statement = null;
-	private static ArrayList <clsOpcEntrenamiento> lista;
+	//private static ArrayList <clsOpcEntrenamiento> lista;
 	private static ArrayList <clsPelicula> listaPeliculas;
 	
 	//init BD y crear tabla juntos 
@@ -93,9 +90,9 @@ public class BD
 	}
 	
 	/**
-	 * Crea la tabla pelicula
+	 * Crea la tabla peliculas
 	 */
-	public static void crearTablaPelicula ()
+	public static void crearTablaPeliculas ()
 	{
 		if (statement==null) return;
 		try 
@@ -112,13 +109,13 @@ public class BD
 	/**
 	 * Crea la tabla Valoracion
 	 */
-	public static void crearTablaValoracion ()
+	public static void crearTablaValoraciones ()
 	{
 		if (statement==null) return;
 		try 
 		{
 			statement.executeUpdate("create table if not exists valoracion " +
-				"(id int, puntuacion int, comentario string, pelicula string, primary key (id))");
+				"(id int, puntuacion int, comentario string, pelicula string, foreign key (nombre) references pelicula (nombre), primary key (id))");
 		} 
 		catch (SQLException e) 
 		{
@@ -126,22 +123,6 @@ public class BD
 		}
 	}
 	
-	/**
-	 * Crea la tabla de las opciones de entrenamientos
-	 */
-	public static void crearTablaOpcEntrenamiento ()
-	{
-		if (statement==null) return;
-		try 
-		{
-			statement.executeUpdate("create table if not exists opcionentrenamiento " +
-				"(fichero string, codigo string, nombre string, nivel string, calxsec real, duracion integer, primary key (codigo))");
-		} 
-		catch (SQLException e) 
-		{
-			logger.log(Level.SEVERE, e.getMessage());
-		}
-	}
 	
 	/**
 	 * Guarda los datos del usuario en la tabla Usuarios
@@ -155,16 +136,17 @@ public class BD
 	 * @throws ClassNotFoundException
 	 * @throws clsUsuarioRepetido
 	 */
-	public static void altaUsuario (String usuario, String contraseña, String nombre, String apellido, double peso,double altura, String sexo) throws ClassNotFoundException, clsUsuarioRepetido
+	public static void altaUsuario (String usuario, String contraseña, String nombre, String apellido) throws ClassNotFoundException, clsUsuarioRepetido
 	{
 		try
 		{		    
-			statement.executeUpdate("insert into usuarios values('"+usuario+"', '"+contraseña+"', '"+nombre+"', '"+apellido+"', "+peso+", "+altura+", '"+sexo+"')");
+			statement.executeUpdate("insert into usuarios values('"+usuario+"', '"+contraseña+"', '"+nombre+"', '"+apellido+"')");
 		}	 
 		catch(SQLException e)
 		{
 			logger.log(Level.WARNING, e.getMessage());
 			throw new clsUsuarioRepetido();
+			
 		} 
 	}
 	 
@@ -232,18 +214,16 @@ public class BD
 		try
 		{
 			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select * from usuarios");
+			ResultSet rs = statement.executeQuery("select * from usuarios ");
 			while(rs.next())
 			{
 				if (rs.getString("usuario").equals(usuario))
 		       	{
-					user.setUsuario(usuario);
+					user.setNickUsuario(usuario);
 					user.setContraseña(rs.getString("contraseña"));
 					user.setNombre(rs.getString("nombre"));
 					user.setApellido(rs.getString("apellido"));
-					user.setSexo(rs.getString("sexo"));
-					user.setAltura(rs.getDouble("altura"));
-					user.setPeso(rs.getDouble("peso"));
+					
 		       	}
 			}
 		}	 
@@ -255,29 +235,29 @@ public class BD
 	}
 	
 	/**
-	 * Método para conseguir una opción de entrenamiento con todos sus atributos
-	 * identificandolo meidante su código 
-	 * @param codigo
-	 * @return el objeto entrenamiento
+	 * Método para conseguir una valoracion con todos sus atributos
+	 * identificandolo meidante la pelicula que valora
+	 * @param pelicula
+	 * @return la puntuacion
 	 */
-	public static clsOpcEntrenamiento getEntrena (String codigo)
+	public static ArrayList<clsValoracion> getValoracion (String pelicula)
 	{
-		clsOpcEntrenamiento entrena = new clsOpcEntrenamiento();
+		ArrayList<clsValoracion> listaValoracion =  new ArrayList<clsValoracion>() ;
+		clsValoracion valoracion = new clsValoracion();
 		try
 		{
 			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select * from opcionentrenamiento");
+			ResultSet rs = statement.executeQuery("select * from valoracion");
 			while(rs.next())
 			{
-				if (rs.getString("codigo").equals(codigo))
+				if (rs.getString("pelicula").equals(pelicula))
 		       	{
-					File f = new File ((rs.getString("fichero")));
-					entrena.setFile(f);
-					entrena.setCodigo(rs.getString("codigo"));
-					entrena.setNombre(rs.getString("nombre"));
-					entrena.setNivel(rs.getString("nivel"));
-					entrena.setCalxsec(rs.getDouble("calxsec"));
-					entrena.setDuracion(rs.getInt("duracion"));
+					valoracion.setId(rs.getInt("id"));
+					valoracion.setPuntuacion(rs.getInt("puntuacion"));
+					valoracion.setComentario(rs.getString("comentario"));
+					valoracion.setPelicula(rs.getString("pelicula"));
+				
+					listaValoracion.add(valoracion);
 		       	}
 			}
 		}	 
@@ -285,70 +265,7 @@ public class BD
 		{
 			logger.log(Level.WARNING, e.getMessage());
 		}
-		return entrena;
-	}
-	
-	/**
-	 * Método para conseguir un de entrenamiento con todos sus atributos
-	 * identificandolo meidante la fecha
-	 * @param fecha
-	 * @return el objeto entrenamiento
-	 */
-	public static clsEntrenamiento getEntrenamiento (String fecha)
-	{
-		clsEntrenamiento entrena = new clsEntrenamiento();
-		try
-		{
-			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select * from entrenamiento");
-			while(rs.next())
-			{
-				if (rs.getString("fecha").equals(fecha))
-		       	{
-					entrena.setCodigo(rs.getString("codigo"));
-					entrena.setFecha(rs.getString("fecha"));
-					entrena.setDuracion(rs.getString("duracion"));
-					entrena.setCalorias(rs.getDouble("calorias"));		
-		       	}
-			}
-		}	 
-		catch(SQLException e)
-		{
-			logger.log(Level.WARNING, e.getMessage());
-		}
-		return entrena;
-	}
-	
-	/**
-	 * Método para conseguir una carrera con todos sus atributos
-	 * identificandolo meidante su fecha 
-	 * @param fecha
-	 * @return el objeto carrera
-	 */
-	public static clsCarrera getCarrera (String fecha)
-	{
-		clsCarrera carrera = new clsCarrera();
-		try
-		{
-			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select * from carrera");
-			while(rs.next())
-			{
-				if (rs.getString("fecha").equals(fecha))
-		       	{
-					carrera.setFecha(rs.getString("fecha"));
-					carrera.setDuracion(rs.getString("duracion"));
-					carrera.setCalorias(rs.getDouble("calorias"));
-					carrera.setKm(rs.getInt("km"));
-					carrera.setRitmo(rs.getString("ritmo"));
-		       	}
-			}
-		}	 
-		catch(SQLException e)
-		{
-			logger.log(Level.WARNING, e.getMessage());
-		}
-		return carrera;
+		return listaValoracion;
 	}
 	
 	/**
@@ -361,11 +278,11 @@ public class BD
 	 * @param usuario
 	 * @throws ClassNotFoundException
 	 */
-	public static void registrarCarrera (String fecha, String duracion, double calorias,  double km, String ritmo, String usuario) throws ClassNotFoundException
+	public static void registrarPelicula (String nombre, String sinopsis, String director, int duracion) throws ClassNotFoundException
 	{
 		try
 		{	
-			statement.executeUpdate("insert into carrera values("+fecha+", '"+duracion+"', "+calorias+", "+km+", '"+ritmo+"', '"+usuario+"')");
+			statement.executeUpdate("insert into peliculas values('"+nombre+"', '"+sinopsis+"', '"+director+"', "+duracion+")");
 		}	 
 		catch(SQLException e)
 		{
@@ -374,14 +291,14 @@ public class BD
 	}
 	
 	/**
-	 * Elimina el statement identificado con la fecha de la tabla carrera
+	 * Elimina el statement identificado con la nombre de la tabla pelicula
 	 * @param fecha
 	 */
-	public static void borrarCarrera (String fecha)
+	public static void borrarpelicula (String nombre)
 	{
 		try
 		{	
-			statement.executeUpdate("delete from carrera where fecha = '"+fecha+"';");
+			statement.executeUpdate("delete from carrera where nombre = '"+nombre+"';");
 		}	 
 		catch(SQLException e)
 		{
@@ -391,19 +308,18 @@ public class BD
 	
 	
 	/**
-	 * Guarda los datos del entrenamiento en la tabla entrenamiento
-	 * @param fecha
-	 * @param duracion
-	 * @param calorias
-	 * @param codigo
-	 * @param usuario
+	 * Guarda los datos de la valoracion en la tabla valoracion
+	 * @param id
+	 * @param puntuacion
+	 * @param comentario
+	 * @param pelicula
 	 * @throws ClassNotFoundException
 	 */
-	public static void registrarEntrenamiento (String fecha, String duracion, double calorias, String codigo, String usuario) throws ClassNotFoundException
+	public static void registrarValoracion (int id,int puntuacion, String comentario, String pelicula) throws ClassNotFoundException
 	{
 		try
 		{	
-			statement.executeUpdate("insert into entrenamiento values("+fecha+", "+duracion+", "+calorias+", '"+codigo+"', '"+usuario+"')");
+			statement.executeUpdate("insert into valoraciones values("+id+", "+puntuacion+",'"+comentario+"', '"+pelicula+"')");
 		}	 
 		catch(SQLException e)
 		{
@@ -415,11 +331,11 @@ public class BD
 	 * Elimina el statement identificado con la fecha de la tabla entrenamiento 
 	 * @param fecha
 	 */
-	public static void borrarEntrena (String fecha)
+	public static void borrarValoracion (String pelicula)
 	{
 		try
 		{	
-			statement.executeUpdate("delete from entrenamiento where fecha = '"+fecha+"';");
+			statement.executeUpdate("delete from valoraciones where pelicula = '"+pelicula+"';");
 		}	 
 		catch(SQLException e)
 		{
@@ -427,124 +343,7 @@ public class BD
 		} 
 	}
 	
-	/**
-	 * Guarda los datos de la opción de entrenamiento en la tabla OpcionEntrenamiento
-	 * @param file
-	 * @param codigo
-	 * @param nombre
-	 * @param nivel
-	 * @param calxsec
-	 * @param duracion
-	 */
-	public static void registrarOpcEntrenamiento (File file, String codigo, String nombre, String nivel, double calxsec, int duracion) 
-	{
-		try
-		{	
-			statement.executeUpdate("insert into opcionentrenamiento values('"+file.getAbsolutePath()+"','"+codigo+"','"+nombre+"','"+nivel+"',"+calxsec+","+duracion+")");
-		}	 
-		catch(SQLException e)
-		{
-			logger.log(Level.WARNING, e.getMessage());
-		} 
-	}
-	
-	/**
-	 * Método para obtener todas las opciones de entrenamiento registradas en la 
-	 * base de datos OpcionEntrenamiento mediante una lista de objetos clsOpcEntrenamiento
-	 * @return ArrayList de todas las opciones de entrenamiento registradas
-	 */
-	public static ArrayList <clsOpcEntrenamiento> getLista ()
-	{
-		lista = new ArrayList<clsOpcEntrenamiento>();
-		try
-		{
-			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select * from opcionentrenamiento");
-			while(rs.next())
-			{	
-				File fichero = new File (rs.getString("fichero"));
-				String codigo = rs.getString("codigo");
-				String nombre = rs.getString("nombre");
-				String nivel = rs.getString("nivel");
-				int duracion = rs.getInt("duracion");
-				double calxsec = rs.getDouble("calxsec");
-				clsOpcEntrenamiento entrenamiento = new clsOpcEntrenamiento(fichero,codigo, nombre, nivel, duracion,calxsec);
-				lista.add(entrenamiento);
-			}
-		}	 
-		catch(SQLException e)
-		{
-			logger.log(Level.WARNING, e.getMessage());
-		}
-		return lista;
-	}
-	
-	/**
-	 * Método para obtener todas lascarreras registradas en la 
-	 * base de datos Carreras mediante una lista de objetos clsCarrera
-	 * @param usuario
-	 * @return ArrayList de objetos carrera
-	 * @throws clsSinActividad
-	 */
-	public static ArrayList <clsCarrera> getMisCarreras (String usuario) throws clsSinActividad
-	{
-		listaCarreras = new ArrayList<clsCarrera>();
-		try
-		{
-			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select * from carrera where usuario = '"+usuario+"';");
-			while(rs.next())
-			{	
-				String fecha = rs.getString("fecha");
-				String duracion = rs.getString("duracion");
-				double calorias = rs.getDouble("calorias");
-				double km = rs.getDouble("km");
-				String ritmo = rs.getString("ritmo");
-				clsCarrera carrera = new clsCarrera(fecha, duracion, calorias, km, ritmo);
-				listaCarreras.add(carrera);
-			}
-			if (listaCarreras.size()<1) throw new clsSinActividad();
-		}	 
-		catch(SQLException e)
-		{
-			logger.log(Level.WARNING, e.getMessage());
-		}
-		return listaCarreras;
-	}
-	
-	/**
-	 * Método para obtener todos los entrenamientos registrados en la 
-	 * base de datos Entrenamiento mediante una lista de objetos clsEntrenamiento
-	 * @param usuario
-	 * @return ArrayList de entrenamientos
-	 * @throws clsSinActividad
-	 */
-	public static ArrayList <clsEntrenamiento> getMisEntrenamientos(String usuario) throws clsSinActividad 
-	{
-		ArrayList <clsEntrenamiento> listaEntrenas = new ArrayList<clsEntrenamiento>();
-		try
-		{
-			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select * from entrenamiento where usuario = '"+usuario+"';");
-			while(rs.next())
-			{	
-				clsEntrenamiento entrena = new clsEntrenamiento ();
-				entrena.setCodigo(rs.getString("codigo"));
-				entrena.setFecha(rs.getString("fecha"));
-				entrena.setDuracion(rs.getString("duracion"));
-				entrena.setCalorias(rs.getDouble("calorias"));
-				listaEntrenas.add(entrena);
-			}
-			
-			if (listaEntrenas.size()<1) throw new clsSinActividad();
-		}	 
-		catch(SQLException e)
-		{
-			logger.log(Level.WARNING, e.getMessage());
-		}
-		return listaEntrenas;
-	}
-	
+		
 	/**
 	 * Método para eliminar todas las tablas de la base de datos
 	 */
@@ -554,9 +353,9 @@ public class BD
 		{
 			statement = connection.createStatement();
 			statement.executeQuery("drop table if exists usuarios");
-			statement.executeQuery("drop table if exists carrera");
-			statement.executeQuery("drop table if exists entrenamiento");
-			statement.executeQuery("drop table if exists opcionentrenamiento");
+			statement.executeQuery("drop table if exists peliculas");
+			statement.executeQuery("drop table if exists valoraciones");
+		
 		}	 
 		catch(SQLException e)
 		{

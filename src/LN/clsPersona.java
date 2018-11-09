@@ -5,10 +5,17 @@ public class clsPersona
 	private String nombre, apellido, contraseña;
 
 	public clsPersona(String nombre, String apellido, String contraseña) {
-		super();
+		
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.contraseña = contraseña;
+	}
+	
+	public clsPersona()
+	{
+		nombre="";
+		apellido = "";
+		contraseña = "";
 	}
 
 	public String getNombre() {

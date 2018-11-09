@@ -1,14 +1,16 @@
 package LN;
 
+import java.util.ArrayList;
+
 
 
 public class clsPelicula 
 {
 	private String nombre, sinopsis, director;
-	private double valoracion;
+	private ArrayList<clsValoracion> valoracion;
 	private int duracion;
 	
-	public clsPelicula(String nombre, String sinopsis, String director,  double valoracion,
+	public clsPelicula(String nombre, String sinopsis, String director,  ArrayList<clsValoracion> valoracion,
 			int duracion) 
 	{
 		super();
@@ -43,11 +45,11 @@ public class clsPelicula
 		this.director = director;
 	}
 
-	public double getValoracion() {
+	public ArrayList<clsValoracion> getValoracion() {
 		return valoracion;
 	}
 
-	public void setValoracion(double valoracion) {
+	public void setValoracion(ArrayList<clsValoracion> valoracion) {
 		this.valoracion = valoracion;
 	}
 
