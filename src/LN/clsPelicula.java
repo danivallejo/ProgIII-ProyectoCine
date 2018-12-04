@@ -7,18 +7,31 @@ import java.util.ArrayList;
 public class clsPelicula 
 {
 	private String nombre, sinopsis, director;
-	private ArrayList<clsValoracion> valoracion;
+	private double valoracionM;
+	//private ArrayList<clsValoracion> valoracion;
 	private int duracion;
 	
-	public clsPelicula(String nombre, String sinopsis, String director,  ArrayList<clsValoracion> valoracion,
+	public clsPelicula(String nombre, String sinopsis, String director, double valoracionM, // ArrayList<clsValoracion> valoracion,
 			int duracion) 
 	{
 		super();
 		this.nombre = nombre;
 		this.sinopsis = sinopsis;
 		this.director = director;
-		this.valoracion = valoracion;
+		//this.valoracion = valoracion;
 		this.duracion = duracion;
+		this.valoracionM = valoracionM;
+	}
+	
+	
+	public clsPelicula()
+	{
+		nombre="";
+		sinopsis = "";
+		director = "";
+		//valoracion = null;
+		valoracionM = 0.0;
+		
 	}
 
 	public String getNombre() {
@@ -45,13 +58,13 @@ public class clsPelicula
 		this.director = director;
 	}
 
-	public ArrayList<clsValoracion> getValoracion() {
-		return valoracion;
-	}
+	//public ArrayList<clsValoracion> getValoracion() {
+		//return valoracion;
+	//}
 
-	public void setValoracion(ArrayList<clsValoracion> valoracion) {
-		this.valoracion = valoracion;
-	}
+	//public void setValoracion(ArrayList<clsValoracion> valoracion) {
+	//	this.valoracion = valoracion;
+	//}
 
 	public int getDuracion() {
 		return duracion;
@@ -60,5 +73,18 @@ public class clsPelicula
 	public void setDuracion(int duracion) {
 		this.duracion = duracion;
 	}
+
+
+	public double getValoracionM() {
+		return valoracionM;
+	}
+
+
+	public void setValoracionM(double valoracionM) {
+		this.valoracionM = valoracionM;
+	}
+	
+	
+    
 
 }

@@ -12,9 +12,15 @@ import javax.swing.JButton;
 import javax.swing.DropMode;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
-import java.awt.Color;
 
-public class FrInicio extends JFrame {
+import LD.BD;
+import LN.clsUsuario;
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class frInicio extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtUsuario;
@@ -27,7 +33,14 @@ public class FrInicio extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					FrInicio frame = new FrInicio();
+
+					BD.initBD("CINESA");
+					BD.crearTablaPeliculas();
+					BD.crearTablaValoraciones();
+					BD.crearTablaUsuarios();
+					//meterOpciones();
+					
+					frInicio frame = new frInicio();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -39,7 +52,7 @@ public class FrInicio extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public FrInicio() {
+	public frInicio() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 503, 553);
 		contentPane = new JPanel();
@@ -66,22 +79,99 @@ public class FrInicio extends JFrame {
 		contentPane.add(lblUsuario);
 		
 		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(173, 300, 56, 16);
+		lblPassword.setBounds(173, 300, 113, 16);
 		contentPane.add(lblPassword);
 		
 		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setIcon(new ImageIcon(FrInicio.class.getResource("/images/images.jpg")));
+		lblNewLabel.setIcon(new ImageIcon(frInicio.class.getResource("/images/images.jpg")));
 		lblNewLabel.setBounds(137, 28, 217, 130);
 		contentPane.add(lblNewLabel);
 		
-		JButton btnNewButton = new JButton("Registrarse");
-		btnNewButton.setBounds(173, 449, 132, 25);
-		contentPane.add(btnNewButton);
+		JButton bRegistro = new JButton("Registrarse");
+		bRegistro.setBounds(173, 449, 132, 25);
+		contentPane.add(bRegistro);
 		
 		JLabel lblElUsuarioO = new JLabel("El usuario o la contrase\u00F1a son erroneos");
 		lblElUsuarioO.setVisible(false);
 		lblElUsuarioO.setForeground(new Color(204, 0, 0));
 		lblElUsuarioO.setBounds(118, 413, 258, 16);
 		contentPane.add(lblElUsuarioO);
+	
+	btnIniciarSesin.addActionListener( new ActionListener() 
+	{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				String usuario = txtUsuario.getText();
+				usuario = usuario.toUpperCase();
+				String contrasenya = String.valueOf(pwdPassword.getPassword());
+				contrasenya = contrasenya.toUpperCase();
+				try 
+				{
+					if (usuario.equals("ADMIN") && contrasenya.equals("ADMIN") )
+					{
+						frPrincipalAdmin ventana1 = new frPrincipalAdmin();
+						ventana1.setVisible(true);
+						dispose();
+					}
+					else{
+						if (BD.inicioSesion(usuario, contrasenya))
+					{
+						lblElUsuarioO.setVisible(false);
+						clsUsuario user = BD.getUser(usuario);
+						frPrincipal ventana = new frPrincipal ();
+						ventana.setVisible(true);
+						dispose();
+					}
+					else
+					{
+						lblElUsuarioO.setVisible(true);
+						txtUsuario.setText("");
+						pwdPassword.setText("");
+					}
+					}
+					
+				} 
+				catch (ClassNotFoundException e1) 
+				{
+					e1.printStackTrace();
+				}
+			}
+		});
+	
+	bRegistro.addActionListener( new ActionListener()
+	{
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{
+			frRegistro ventana = new frRegistro();
+			ventana.setVisible(true);
+			dispose();
+		}
+	});
+	
+	
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
+

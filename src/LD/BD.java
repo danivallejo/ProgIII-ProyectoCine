@@ -81,7 +81,8 @@ public class BD
 		try 
 		{
 			statement.executeUpdate("create table if not exists usuarios " +
-				"(usuario string, contraseña string, nombre string, apellido string, primary key (usuario))");
+				"(usuario string, contraseña string, nombre string, apellido string, monedero int, primary key (usuario))");
+			
 		} 
 		catch (SQLException e) 
 		{
@@ -97,7 +98,7 @@ public class BD
 		if (statement==null) return;
 		try 
 		{
-			statement.executeUpdate("create table if not exists pelicula " +
+			statement.executeUpdate("create table if not exists peliculas " +
 				"(nombre string, sinopsis string, director string, valoracion double, duracion int, primary key (nombre))");
 		} 
 		catch (SQLException e) 
@@ -114,8 +115,26 @@ public class BD
 		if (statement==null) return;
 		try 
 		{
-			statement.executeUpdate("create table if not exists valoracion " +
-				"(id int, puntuacion int, comentario string, pelicula string, foreign key (nombre) references pelicula (nombre), primary key (id))");
+			statement.executeUpdate("create table if not exists valoraciones " +
+				"(id int, puntuacion int, pelicula string, foreign key (pelicula) references pelicula (nombre), primary key (id))");
+		} 
+		catch (SQLException e) 
+		{
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+	}
+	
+	/**
+	 * Crea la tabla compras
+	 */
+	public static void crearTablaCompras ()
+	{
+		if (statement==null) return;
+		try 
+		{
+			statement.executeUpdate("create table if not exists compras " +
+				"(id int, usuario string, cantidad int, nombre string, primary key (id))");
+			
 		} 
 		catch (SQLException e) 
 		{
@@ -130,17 +149,14 @@ public class BD
 	 * @param contraseña
 	 * @param nombre
 	 * @param apellido
-	 * @param peso
-	 * @param altura
-	 * @param sexo
 	 * @throws ClassNotFoundException
 	 * @throws clsUsuarioRepetido
 	 */
-	public static void altaUsuario (String usuario, String contraseña, String nombre, String apellido) throws ClassNotFoundException, clsUsuarioRepetido
+	public static void altaUsuario (String usuario, String contraseña, String nombre, String apellido, int monedero) throws ClassNotFoundException, clsUsuarioRepetido
 	{
 		try
 		{		    
-			statement.executeUpdate("insert into usuarios values('"+usuario+"', '"+contraseña+"', '"+nombre+"', '"+apellido+"')");
+			statement.executeUpdate("insert into usuarios values('"+usuario+"', '"+contraseña+"', '"+nombre+"', '"+apellido+"', '"+monedero+"')");
 		}	 
 		catch(SQLException e)
 		{
@@ -169,6 +185,26 @@ public class BD
 			logger.log(Level.WARNING, e.getMessage());
 		} 
 	}
+	
+	/**
+	 * Actualiza el monedero del usuario 
+	 * usando como identificativo el nombre de usuario
+	 * @param usuario
+	 * @param monedero
+	 */
+	public static void editarMonedero (String usuario, int monedero)
+	{
+		try
+		{		    
+			statement.executeUpdate("update usuarios set monedero = '"+monedero+"' where (usuario = '"+usuario+"');");
+		}	 
+		catch(SQLException e)
+		{
+			logger.log(Level.WARNING, e.getMessage());
+		} 
+	}
+	
+	
 
 	 /**
 	  * Comprueba que el usuario y la contraseña son correctas
@@ -223,6 +259,7 @@ public class BD
 					user.setContraseña(rs.getString("contraseña"));
 					user.setNombre(rs.getString("nombre"));
 					user.setApellido(rs.getString("apellido"));
+					user.setMonedero(rs.getInt("monedero"));
 					
 		       	}
 			}
@@ -247,14 +284,13 @@ public class BD
 		try
 		{
 			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select * from valoracion");
+			ResultSet rs = statement.executeQuery("select * from valoraciones");
 			while(rs.next())
 			{
 				if (rs.getString("pelicula").equals(pelicula))
 		       	{
 					valoracion.setId(rs.getInt("id"));
 					valoracion.setPuntuacion(rs.getInt("puntuacion"));
-					valoracion.setComentario(rs.getString("comentario"));
 					valoracion.setPelicula(rs.getString("pelicula"));
 				
 					listaValoracion.add(valoracion);
@@ -267,6 +303,133 @@ public class BD
 		}
 		return listaValoracion;
 	}
+	/**
+	 * Método para conseguir el monedero 
+	 * identificandolo meidante el usuario 
+	 * @param usuario
+	 * @return el monedero
+	 */
+	public static int getMonedero (String usuario)
+	{
+		
+		
+		int monedero=0 ;
+		try
+		{
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select monedero from compras");
+			while(rs.next())
+			{
+					monedero=rs.getInt("monedero");
+					
+					
+		    }
+			
+		}	 
+		catch(SQLException e)
+		{
+			logger.log(Level.WARNING, e.getMessage());
+		}
+		return monedero;
+	}
+	
+	/**
+	 * Método para conseguir una valoracion con todos sus atributos
+	 * identificandolo meidante la pelicula que valora
+	 * @param pelicula
+	 * @return la puntuacion
+	 */
+	public static int getIdValoracion ()
+	{
+		
+		
+		int ultimoid=0 ;
+		try
+		{
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select id from valoraciones");
+			while(rs.next())
+			{
+					ultimoid=rs.getInt("id");
+					
+					
+		    }
+			
+		}	 
+		catch(SQLException e)
+		{
+			logger.log(Level.WARNING, e.getMessage());
+		}
+		return ultimoid;
+	}
+	
+	/**
+	 * Método que devuelve el objeto usuario con todos sus atributos
+	 * identificandolo mediante el nombre de usuario
+	 * @param usuario
+	 * @return el objeto usuario
+	 */
+	public static ArrayList<String> getnombrePelicula (ArrayList<String> pelicula)
+	{
+			
+		try
+		{
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select nombre from peliculas");
+			while(rs.next())
+			{
+				int i = 0;
+		       pelicula.add(i, rs.getString("nombre")); 
+		       i++;
+					
+					
+		       	
+			}
+		}	 
+		catch(SQLException e)
+		{
+			logger.log(Level.WARNING, e.getMessage());
+		}
+		return pelicula;
+	}
+	
+	public static clsPelicula getPelicula (String nombre)
+	{
+			clsPelicula pelicula = new clsPelicula ();
+		try
+		{
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select * from peliculas");
+			while(rs.next())
+				
+			{
+				if (rs.getString("nombre").equals(nombre))
+				{
+					pelicula.setNombre(rs.getString("nombre"));
+					pelicula.setSinopsis(rs.getString("sinopsis"));
+					pelicula.setDirector(rs.getString("director"));
+					pelicula.setDuracion(rs.getInt("duracion"));
+					pelicula.setValoracionM(rs.getDouble("valoracion"));
+					
+					
+				}
+				
+					
+					
+		       	
+			}
+		}	 
+		catch(SQLException e)
+		{
+			logger.log(Level.WARNING, e.getMessage());
+		}
+		return pelicula;
+	}
+	
+	
+	
+	
+	
 	
 	/**
 	 * Guarda los datos de la carrera en la tabla Carrera
@@ -278,11 +441,11 @@ public class BD
 	 * @param usuario
 	 * @throws ClassNotFoundException
 	 */
-	public static void registrarPelicula (String nombre, String sinopsis, String director, int duracion) throws ClassNotFoundException
+	public static void registrarPelicula (String nombre, String sinopsis, String director, double valoracion, int duracion) throws ClassNotFoundException
 	{
 		try
 		{	
-			statement.executeUpdate("insert into peliculas values('"+nombre+"', '"+sinopsis+"', '"+director+"', "+duracion+")");
+			statement.executeUpdate("insert into peliculas values('"+nombre+"', '"+sinopsis+"', '"+director+"', '"+valoracion+"', "+duracion+")");
 		}	 
 		catch(SQLException e)
 		{
@@ -298,7 +461,7 @@ public class BD
 	{
 		try
 		{	
-			statement.executeUpdate("delete from carrera where nombre = '"+nombre+"';");
+			statement.executeUpdate("delete from peliculas where nombre = '"+nombre+"';");
 		}	 
 		catch(SQLException e)
 		{
@@ -306,6 +469,47 @@ public class BD
 		} 
 	}
 	
+	public static void actualizarPelicula (String pelicula, double puntuacion)
+	{
+		
+		try
+		{	
+			statement.executeUpdate("update peliculas set valoracion = '"+puntuacion+"' where nombre = '"+pelicula+"';");
+		}	 
+		catch(SQLException e)
+		{
+			logger.log(Level.WARNING, e.getMessage());
+		} 
+			
+	}
+	
+	public static ArrayList<Integer> getPuntuaciones (String nombre)
+	{
+		ArrayList<Integer> puntuaciones=new ArrayList<Integer>();
+		int i=0;;
+		
+		try
+		{
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select puntuacion from valoraciones where pelicula = '"+nombre+"';");
+			while(rs.next())
+				
+			{
+					
+					puntuaciones.add(i, rs.getInt("puntuacion"));
+					i++;
+				
+			}
+			
+		}catch(SQLException e)
+		{
+			logger.log(Level.WARNING, e.getMessage());
+		} 
+		
+				
+		return puntuaciones;
+		
+	}
 	
 	/**
 	 * Guarda los datos de la valoracion en la tabla valoracion
@@ -315,11 +519,11 @@ public class BD
 	 * @param pelicula
 	 * @throws ClassNotFoundException
 	 */
-	public static void registrarValoracion (int id,int puntuacion, String comentario, String pelicula) throws ClassNotFoundException
+	public static void registrarValoracion (int id,int puntuacion, String pelicula) throws ClassNotFoundException
 	{
 		try
 		{	
-			statement.executeUpdate("insert into valoraciones values("+id+", "+puntuacion+",'"+comentario+"', '"+pelicula+"')");
+			statement.executeUpdate("insert into valoraciones values("+id+", "+puntuacion+", '"+pelicula+"')");
 		}	 
 		catch(SQLException e)
 		{
@@ -341,6 +545,50 @@ public class BD
 		{
 			logger.log(Level.WARNING, e.getMessage());
 		} 
+	}
+	
+	/**
+	 * Guarda los datos de la compra en la tabla compras
+	 * @param id
+	 * @param usuario
+	 * @param cantidad
+	 * @param nombre
+	 * @throws ClassNotFoundException
+	 */
+	public static void registrarCompra (int id,String usuario, int cantidad, String nombre) throws ClassNotFoundException
+	{
+		try
+		{	
+			statement.executeUpdate("insert into valoraciones values("+id+", '"+usuario+"',"+cantidad+" '"+nombre+"')");
+		}	 
+		catch(SQLException e)
+		{
+			logger.log(Level.WARNING, e.getMessage());
+		} 
+	}
+	
+	public static int getIdCompra ()
+	{
+		
+		
+		int ultimoid=0 ;
+		try
+		{
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select id from compras");
+			while(rs.next())
+			{
+					ultimoid=rs.getInt("id");
+					
+					
+		    }
+			
+		}	 
+		catch(SQLException e)
+		{
+			logger.log(Level.WARNING, e.getMessage());
+		}
+		return ultimoid;
 	}
 	
 		

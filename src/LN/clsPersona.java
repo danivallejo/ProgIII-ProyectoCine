@@ -3,12 +3,15 @@ package LN;
 public class clsPersona 
 {
 	private String nombre, apellido, contraseña;
+	
 
 	public clsPersona(String nombre, String apellido, String contraseña) {
 		
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.contraseña = contraseña;
+	
+		
 	}
 	
 	public clsPersona()
@@ -16,6 +19,7 @@ public class clsPersona
 		nombre="";
 		apellido = "";
 		contraseña = "";
+		
 	}
 
 	public String getNombre() {
@@ -41,6 +45,8 @@ public class clsPersona
 	public void setContraseña(String contraseña) {
 		this.contraseña = contraseña;
 	}
+
+	
 	
 	
 	
