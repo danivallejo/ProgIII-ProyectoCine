@@ -15,6 +15,8 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
@@ -25,7 +27,10 @@ import javax.swing.JScrollBar;
 import javax.swing.JSpinner;
 import javax.swing.JScrollPane;
 
+import COMUN.EMAIL;
 import LD.BD;
+import LD.crearFichero;
+import LN.clsUsuario;
 
 public class frCompra extends JFrame {
 
@@ -38,7 +43,7 @@ public class frCompra extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public frCompra() {
+	public frCompra(clsUsuario user) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 503, 553);
 		contentPane = new JPanel();
@@ -101,7 +106,7 @@ public class frCompra extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				frPrincipal ventana = new frPrincipal();
+				frPrincipal ventana = new frPrincipal(user);
 				ventana.setVisible(true);
 				dispose();
 			}
@@ -116,19 +121,15 @@ public class frCompra extends JFrame {
 				int id;
 				int numpelicula;
 				int cantidadfinal;
-				String cantidad;
-				String nombre;
 				String usuario;
+				String cantidad;
+				String email;
+				String nombre;
 				int monederousu;
+				int gastado;
 				int nuevomonedero;
-				int i;
-				int x;
-				double p;
-				double pu=0.0;
-				double resultado;
-				int a=0;
-				
-				ArrayList<Integer> pelis;
+				String ruta=null;
+			
 				
 			try {
 						
@@ -142,52 +143,46 @@ public class frCompra extends JFrame {
 				id=BD.getIdCompra(); 
 				id ++;
 				
-				//usuario=BD.getUser(usuario);
-				//
+				ruta="Compra"+id+".txt";
 				
-				monederousu=BD.getMonedero(usuario);
+				usuario=user.getNickUsuario();
+				monederousu=user.getMonedero();
 				
-				nuevomonedero=cantidadfinal*5;
+				gastado=cantidadfinal*5;
 				
-				if(monederousu-nuevomonedero<0)
+				nuevomonedero=monederousu-gastado;
+				
+				
+				
+				if(monederousu-gastado>=0)
 				{
-					avisar.showInputDialog("No dispone de suficientes fondos, porfavor introduzca dinero en su monedero. Gracias!");
-				}else
-				{
+					
 					BD.registrarCompra(id, usuario, cantidadfinal, nombre);
 					
 					BD.editarMonedero(usuario, nuevomonedero);
 					
-					gracias.showMessageDialog(null, "Gracias por comprar " + cantidadfinal + " tickets para la película "+ nombre + " . ");
+					JOptionPane.showMessageDialog(null, "Gracias por comprar " + cantidadfinal + " tickets para la película "+ nombre + " . ");
 					
-					frPrincipal ventana = new frPrincipal ();
+					crearFichero.Escribir(ruta, gastado, cantidadfinal);
+					
+					
+					
+					email=user.getEmail();
+					EMAIL.enviarEmail(email, ruta);
+					
+					
+					frPrincipal ventana = new frPrincipal (user);
 					ventana.setVisible(true);
 					dispose();
 					
+				}else
+				{
 					
+					
+					
+					avisar.showInputDialog("No dispone de suficientes fondos, porfavor introduzca dinero en su monedero. Gracias!");
 				}
-				
-				
-				
-				
-				
-				
-				
-				
-			
-				
-			
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
+							
 				
 							
 			} catch (Exception e1) {
@@ -202,6 +197,69 @@ public class frCompra extends JFrame {
 				
 			
 		});
+		
+		this.addWindowListener(new WindowListener()
+		{
+			public void windowClosing(WindowEvent arg0)
+			{
+				BD.close();
+				
+			}
+
+			@Override
+			public void windowActivated(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowIconified(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				);
+		
+		
+		
+		
+		
 		
 		
 		

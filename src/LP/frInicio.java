@@ -19,6 +19,8 @@ import LN.clsUsuario;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 public class frInicio extends JFrame {
 
@@ -38,6 +40,7 @@ public class frInicio extends JFrame {
 					BD.crearTablaPeliculas();
 					BD.crearTablaValoraciones();
 					BD.crearTablaUsuarios();
+					BD.crearTablaCompras();
 					//meterOpciones();
 					
 					frInicio frame = new frInicio();
@@ -117,9 +120,9 @@ public class frInicio extends JFrame {
 					else{
 						if (BD.inicioSesion(usuario, contrasenya))
 					{
-						lblElUsuarioO.setVisible(false);
+						
 						clsUsuario user = BD.getUser(usuario);
-						frPrincipal ventana = new frPrincipal ();
+						frPrincipal ventana = new frPrincipal (user);
 						ventana.setVisible(true);
 						dispose();
 					}
@@ -151,7 +154,65 @@ public class frInicio extends JFrame {
 	});
 	
 	
+	
+	
+	this.addWindowListener(new WindowListener()
+	{
+		public void windowClosing(WindowEvent arg0)
+		{
+			BD.close();
+			
+		}
+
+		@Override
+		public void windowActivated(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowClosed(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowIconified(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowOpened(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			);
 	
 	
 	
@@ -163,13 +224,7 @@ public class frInicio extends JFrame {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
+	}
 	
 	
 	

@@ -20,6 +20,8 @@ import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 public class frAgregarP extends JFrame {
 
@@ -29,21 +31,8 @@ public class frAgregarP extends JFrame {
 	private JTextField textSinopsis;
 	private JTextField textDirector;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					frAgregarP frame = new frAgregarP();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
+	
 
 	/**
 	 * Create the frame.
@@ -159,5 +148,71 @@ public class frAgregarP extends JFrame {
 				dispose();
 			}
 		});
+		
+		this.addWindowListener(new WindowListener()
+		{
+			public void windowClosing(WindowEvent arg0)
+			{
+				BD.close();
+				
+			}
+
+			@Override
+			public void windowActivated(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowIconified(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				);
+		
+		
+		
+		
+		
+		
+		
 	}
 }
+

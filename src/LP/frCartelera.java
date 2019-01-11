@@ -21,6 +21,8 @@ import javax.swing.JTextPane;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.SwingConstants;
@@ -28,6 +30,7 @@ import javax.swing.JButton;
 
 import LD.BD;
 import LN.clsPelicula;
+import LN.clsUsuario;
 
 import java.awt.Color;
 import java.io.File;
@@ -48,7 +51,7 @@ public class frCartelera extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public frCartelera() {
+	public frCartelera(clsUsuario user) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 511, 557);
 		contentPane = new JPanel();
@@ -158,7 +161,7 @@ public class frCartelera extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				frPrincipal ventana = new frPrincipal();
+				frPrincipal ventana = new frPrincipal(user);
 				ventana.setVisible(true);
 				dispose();
 			}
@@ -329,6 +332,69 @@ public class frCartelera extends JFrame {
 			}
 			}
 		});
+		
+		this.addWindowListener(new WindowListener()
+		{
+			public void windowClosing(WindowEvent arg0)
+			{
+				BD.close();
+				
+			}
+
+			@Override
+			public void windowActivated(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowIconified(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				);
+		
+		
+		
+		
+		
 		
 		
 		

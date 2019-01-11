@@ -21,6 +21,8 @@ import LN.clsUsuario;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.logging.Logger;
 import java.awt.Font;
 
@@ -36,22 +38,8 @@ public class frRegistro extends JFrame {
 	private JTextField textField_3;
 	
 	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private JTextField textField_4;
 
-//	/**
-//	 * Launch the application.
-//	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					frRegistro frame = new frRegistro();
-//					frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
 	/**
 	 * Create the frame.
@@ -134,6 +122,15 @@ public class frRegistro extends JFrame {
 		monedero.setBounds(257, 98, 105, 22);
 		contentPane.add(monedero);
 		
+		JLabel lblEmail = new JLabel("Email");
+		lblEmail.setBounds(257, 133, 56, 16);
+		contentPane.add(lblEmail);
+		
+		textField_4 = new JTextField();
+		textField_4.setBounds(257, 162, 116, 22);
+		contentPane.add(textField_4);
+		textField_4.setColumns(10);
+		
 		lblDebeDeAceptar.setVisible(false);
 		
 		// Escuchadores de botones
@@ -154,14 +151,15 @@ public class frRegistro extends JFrame {
 							apellido = apellido.toUpperCase();
 							String dinero=(String) monedero.getSelectedItem();
 							int dinerofinal=Integer.parseInt(dinero);
+							String email = textField_4.getText();
 							
 							if (rdbtnAceptoLosTrminos.isSelected())	
 							{
-								BD.altaUsuario(usuario,contrasenya,nombre,apellido, dinerofinal);
+								BD.altaUsuario(usuario,contrasenya,nombre,apellido, dinerofinal, email);
 							
 							clsUsuario user = BD.getUser(usuario);
 				
-							frPrincipal ventana = new frPrincipal ();
+							frPrincipal ventana = new frPrincipal (user);
 							ventana.setVisible(true);
 							dispose();
 							}else 
@@ -192,6 +190,69 @@ public class frRegistro extends JFrame {
 						dispose();
 					}
 				});
+				
+				this.addWindowListener(new WindowListener()
+				{
+					public void windowClosing(WindowEvent arg0)
+					{
+						BD.close();
+						
+					}
+
+					@Override
+					public void windowActivated(WindowEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void windowClosed(WindowEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void windowDeactivated(WindowEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void windowDeiconified(WindowEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void windowIconified(WindowEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void windowOpened(WindowEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+				}
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						);
+				
+				
+				
+				
+				
 				
 	
 	}

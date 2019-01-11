@@ -4,18 +4,21 @@ public class clsUsuario extends clsPersona
 {
 	private String nickUsuario;
 	private int monedero;
+	private String email;
 
-	public clsUsuario(String nombre, String apellido, String contraseña, String nickUsuario, int monedero) 
+	public clsUsuario(String nombre, String apellido, String contraseña, String nickUsuario, int monedero, String email) 
 	{
 		super(nombre, apellido, contraseña);
 		this.nickUsuario = nickUsuario;
 		this.monedero = monedero;
+		this.email = email;
 	}
 	public clsUsuario()
 	{
 		super();
 		nickUsuario ="";
 		monedero= 0;
+		email="";
 	}
 
 	public String getNickUsuario() 
@@ -31,6 +34,12 @@ public class clsUsuario extends clsPersona
 	}
 	public void setMonedero(int monedero) {
 		this.monedero = monedero;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 	

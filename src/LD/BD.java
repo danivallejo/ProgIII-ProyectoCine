@@ -81,7 +81,7 @@ public class BD
 		try 
 		{
 			statement.executeUpdate("create table if not exists usuarios " +
-				"(usuario string, contraseña string, nombre string, apellido string, monedero int, primary key (usuario))");
+				"(usuario string, contraseña string, nombre string, apellido string, monedero int, email string, primary key (usuario))");
 			
 		} 
 		catch (SQLException e) 
@@ -152,11 +152,11 @@ public class BD
 	 * @throws ClassNotFoundException
 	 * @throws clsUsuarioRepetido
 	 */
-	public static void altaUsuario (String usuario, String contraseña, String nombre, String apellido, int monedero) throws ClassNotFoundException, clsUsuarioRepetido
+	public static void altaUsuario (String usuario, String contraseña, String nombre, String apellido, int monedero, String email) throws ClassNotFoundException, clsUsuarioRepetido
 	{
 		try
 		{		    
-			statement.executeUpdate("insert into usuarios values('"+usuario+"', '"+contraseña+"', '"+nombre+"', '"+apellido+"', '"+monedero+"')");
+			statement.executeUpdate("insert into usuarios values('"+usuario+"', '"+contraseña+"', '"+nombre+"', '"+apellido+"', "+monedero+",'"+email+"' )");
 		}	 
 		catch(SQLException e)
 		{
@@ -165,8 +165,24 @@ public class BD
 			
 		} 
 	}
-	 
-
+	
+	/**
+	 * Elimina el statement identificado con la nickname de la tabla usuario
+	 * @param fecha
+	 */
+	public static void borrarUsuario (String nickusuario)
+	{
+		try
+		{	
+			statement.executeUpdate("delete from usuarios where usuario = '"+nickusuario+"';");
+		}	 
+		catch(SQLException e)
+		{
+			logger.log(Level.WARNING, e.getMessage());
+		} 
+	}
+	
+	
 	/**
 	 * Actualiza los atributos del usuario (nombre y apellido)
 	 * usando como identificativo el nombre de usuario
@@ -174,11 +190,11 @@ public class BD
 	 * @param nombre
 	 * @param apellido
 	 */
-	public static void editarUsuario (String usuario, String nombre, String apellido)
+	public static void editarUsuario (String usuario, String nombre, String apellido, String email)
 	{
 		try
 		{		    
-			statement.executeUpdate("update usuarios set nombre = '"+nombre+"', apellido = '"+apellido+"' where (usuario = '"+usuario+"');");
+			statement.executeUpdate("update usuarios set nombre = '"+nombre+"', apellido = '"+apellido+"', email = '"+email+"' where (usuario = '"+usuario+"');");
 		}	 
 		catch(SQLException e)
 		{
@@ -196,7 +212,7 @@ public class BD
 	{
 		try
 		{		    
-			statement.executeUpdate("update usuarios set monedero = '"+monedero+"' where (usuario = '"+usuario+"');");
+			statement.executeUpdate("update usuarios set monedero = "+monedero+" where (usuario = '"+usuario+"');");
 		}	 
 		catch(SQLException e)
 		{
@@ -260,6 +276,7 @@ public class BD
 					user.setNombre(rs.getString("nombre"));
 					user.setApellido(rs.getString("apellido"));
 					user.setMonedero(rs.getInt("monedero"));
+					user.setEmail(rs.getString("email"));
 					
 		       	}
 			}
@@ -303,35 +320,8 @@ public class BD
 		}
 		return listaValoracion;
 	}
-	/**
-	 * Método para conseguir el monedero 
-	 * identificandolo meidante el usuario 
-	 * @param usuario
-	 * @return el monedero
-	 */
-	public static int getMonedero (String usuario)
-	{
-		
-		
-		int monedero=0 ;
-		try
-		{
-			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select monedero from compras");
-			while(rs.next())
-			{
-					monedero=rs.getInt("monedero");
-					
-					
-		    }
-			
-		}	 
-		catch(SQLException e)
-		{
-			logger.log(Level.WARNING, e.getMessage());
-		}
-		return monedero;
-	}
+	
+	
 	
 	/**
 	 * Método para conseguir una valoracion con todos sus atributos
@@ -559,7 +549,7 @@ public class BD
 	{
 		try
 		{	
-			statement.executeUpdate("insert into valoraciones values("+id+", '"+usuario+"',"+cantidad+" '"+nombre+"')");
+			statement.executeUpdate("insert into compras values("+id+", '"+usuario+"', "+cantidad+", '"+nombre+"')");
 		}	 
 		catch(SQLException e)
 		{
@@ -603,6 +593,7 @@ public class BD
 			statement.executeQuery("drop table if exists usuarios");
 			statement.executeQuery("drop table if exists peliculas");
 			statement.executeQuery("drop table if exists valoraciones");
+			statement.executeQuery("drop table if exists compras");
 		
 		}	 
 		catch(SQLException e)

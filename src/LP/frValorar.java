@@ -11,6 +11,8 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import javax.swing.JScrollPane;
 
 import LD.BD;
+import LN.clsUsuario;
 
 public class frValorar extends JFrame {
 
@@ -46,7 +49,7 @@ public class frValorar extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public frValorar() {
+	public frValorar(clsUsuario user) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 503, 553);
 		contentPane = new JPanel();
@@ -104,7 +107,7 @@ public class frValorar extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				frPrincipal ventana = new frPrincipal();
+				frPrincipal ventana = new frPrincipal(user);
 				ventana.setVisible(true);
 				dispose();
 			}
@@ -151,7 +154,7 @@ public class frValorar extends JFrame {
 						p=puntuaciones.get(x);
 						pu=p+pu;
 						a++;
-						System.out.println(p);																	
+																							
 					}
 					
 					
@@ -177,6 +180,69 @@ public class frValorar extends JFrame {
 				}
 			}
 		});
+		
+		this.addWindowListener(new WindowListener()
+		{
+			public void windowClosing(WindowEvent arg0)
+			{
+				BD.close();
+			
+			}
+
+			@Override
+			public void windowActivated(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowIconified(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				);
+		
+		
+		
+		
+		
 		
 		
 	}
