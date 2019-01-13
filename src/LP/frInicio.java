@@ -41,7 +41,7 @@ public class frInicio extends JFrame {
 					BD.crearTablaValoraciones();
 					BD.crearTablaUsuarios();
 					BD.crearTablaCompras();
-					//meterOpciones();
+					
 					
 					frInicio frame = new frInicio();
 					frame.setVisible(true);

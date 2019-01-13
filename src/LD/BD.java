@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import COMUN.clsUsuarioRepetido;
+import LN.clsCompra;
 import LN.clsValoracion;
 import LN.clsPelicula;
 import LN.clsUsuario;
@@ -580,6 +581,55 @@ public class BD
 		}
 		return ultimoid;
 	}
+	
+	/**
+	 * Método que devuelve el objeto Compra con todos sus atributos
+	 * identificandolo mediante el id
+	 * @param id
+	 * @return el objeto Compra
+	 */
+	public static clsCompra getCompra (int id)
+	{
+		clsCompra compra = new clsCompra();
+		try
+		{
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select * from compras ");
+			while(rs.next())
+			{
+				if (rs.getInt("id") == id)
+		       	{
+					compra.setId(id);
+					compra.setUsuario(rs.getString("usuario"));
+					compra.setCantidad(rs.getInt("cantidad"));
+					compra.setNombre(rs.getString("nombre"));
+
+					
+		       	}
+			}
+		}	 
+		catch(SQLException e)
+		{
+			logger.log(Level.WARNING, e.getMessage());
+		}
+		return compra;
+	}
+	
+	/**
+	 * Elimina el statement identificado con el id de la tabla Compras
+	 */
+	public static void borrarCompra (int id)
+	{
+		try
+		{	
+			statement.executeUpdate("delete from compras where id = "+id+";");
+		}	 
+		catch(SQLException e)
+		{
+			logger.log(Level.WARNING, e.getMessage());
+		} 
+	}
+	
 	
 		
 	/**
